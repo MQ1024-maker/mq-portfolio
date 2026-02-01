@@ -108,6 +108,7 @@ collections:
     label: "工作之外"
     files:
       - name: "personal"
+        label: "内容设置" 
         file: "content/personal.json"
         fields:
           - {label: "导语", name: "intro", widget: "text"}
@@ -124,6 +125,7 @@ collections:
     label: "联系方式"
     files:
       - name: "contact"
+        label: "联系信息"
         file: "content/contact.json"
         fields:
           - {label: "微信", name: "wechat", widget: "string"}
