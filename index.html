@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>李梦琪 | Mengqi Li - 投资研究</title>
+  <meta name="description" content="理工金融复合背景，CFA III Candidate，专注硬科技、新能源、AI赛道研究">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Marked.js for Markdown parsing -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  
+  <!-- Tailwind Config -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            slate: {
+              850: '#1e293b',
+              900: '#0f172a',
+              950: '#020617',
+            },
+            accent: {
+              blue: '#7ec8e3',
+              cyan: '#5eead4',
+            }
+          },
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', '"PingFang SC"', '"Microsoft YaHei"', 'sans-serif'],
+            mono: ['"SF Mono"', '"JetBrains Mono"', 'monospace'],
+          },
+        }
+      }
+    }
+  </script>
+  
+  <style>
+    /* 核心样式变量 */
+    :root {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --text-primary: #ffffff;
+      --text-secondary: #e5e7eb;
+      --text-muted: #94a3b8;
+      --accent: #7ec8e3;
+      --border: rgba(255, 255, 255, 0.1);
+    }
+    
+    /* 全局重置 - 直角设计 */
+    * {
+      border-radius: 0 !important;
+    }
+    
+    /* 背景渐变 + 噪点纹理 */
+    body {
+      background: 
+        radial-gradient(ellipse at 0% 0%, rgba(30, 41, 59, 0.8) 0%, transparent 50%),
+        radial-gradient(ellipse at 100% 100%, rgba(15, 23, 42, 1) 0%, transparent 50%),
+        #0f172a;
+      font-family: var(--font-sans);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+    
+    /* 噪点纹理叠加 */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 9999;
+    }
+    
+    /* 玻璃态卡片 */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .glass-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-4px);
+    }
+    
+    /* 渐变文字 */
+    .gradient-text {
+      background: linear-gradient(135deg, #ffffff 0%, #7ec8e3 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    /* 发光数字 */
+    .glow-number {
+      text-shadow: 0 0 30px rgba(126, 200, 227, 0.4);
+    }
+    
+    /* 导航栏毛玻璃 */
+    .nav-glass {
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    /* 几何线条装饰 */
+    .geo-line-h {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+    }
+    
+    .geo-line-v {
+      width: 1px;
+      background: linear-gradient(180deg, transparent, rgba(255,255,255,0.08), transparent);
+    }
+    
+    /* 滚动显示动画 */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    /* 图片懒加载淡入 */
+    .img-fade {
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+    
+    .img-fade.loaded {
+      opacity: 1;
+    }
+    
+    /* 时间轴节点 */
+    .timeline-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      position: relative;
+    }
+    
+    .timeline-dot::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 16px;
+      height: 16px;
+      border: 1px solid rgba(126, 200, 227, 0.3);
+    }
+    
+    /* 选择高亮 */
+    ::selection {
+      background: rgba(126, 200, 227, 0.25);
+    }
+    
+    /* 滚动条 */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+    }
+    
+    /* 移动端菜单 */
+    .mobile-menu {
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .mobile-menu.open {
+      transform: translateX(0);
+    }
+  </style>
+</head>
+<body class="antialiased">
+  <!-- ==================== 导航栏 ==================== -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500">
+    <div class="max-w-6xl mx-auto px-6 h-[60px] flex items-center justify-between">
+      <!-- Logo -->
+      <a href="#hero" class="text-sm font-light tracking-wider text-white/80 hover:text-white transition-colors">
+        MQ
+      </a>
+      
+      <!-- Desktop Nav -->
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#hero" class="text-sm text-white/50 hover:text-white transition-colors">首页</a>
+        <a href="#research" class="text-sm text-white/50 hover:text-white transition-colors">研究</a>
+        <a href="#thesis" class="text-sm text-white/50 hover:text-white transition-colors">观点</a>
+        <a href="#experience" class="text-sm text-white/50 hover:text-white transition-colors">经历</a>
+        <a href="#personal" class="text-sm text-white/50 hover:text-white transition-colors">个人</a>
+        <a href="#contact" class="text-sm text-white/50 hover:text-white transition-colors">联系</a>
+      </div>
+      
+      <!-- Mobile Menu Button -->
+      <button id="menuBtn" class="md:hidden text-white/70 hover:text-white">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+    </div>
+  </nav>
+  
+  <!-- Mobile Menu -->
+  <div id="mobileMenu" class="mobile-menu fixed inset-y-0 right-0 w-72 bg-slate-900/95 backdrop-blur-xl z-50 border-l border-white/5 md:hidden">
+    <div class="p-6">
+      <button id="closeMenu" class="absolute top-6 right-6 text-white/50 hover:text-white">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+      <div class="mt-16 space-y-6">
+        <a href="#hero" class="block text-2xl font-extralight text-white/70 hover:text-white transition-colors mobile-link">首页</a>
+        <a href="#research" class="block text-2xl font-extralight text-white/70 hover:text-white transition-colors mobile-link">研究</a>
+        <a href="#thesis" class="block text-2xl font-extralight text-white/70 hover:text-white transition-colors mobile-link">观点</a>
+        <a href="#experience" class="block text-2xl font-extralight text-white/70 hover:text-white transition-colors mobile-link">经历</a>
+        <a href="#personal" class="block text-2xl font-extralight text-white/70 hover:text-white transition-colors mobile-link">个人</a>
+        <a href="#contact" class="block text-2xl font-extralight text-white/70 hover:text-white transition-colors mobile-link">联系</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== Hero Section ==================== -->
+  <section id="hero" class="min-h-screen flex items-center justify-center relative">
+    <!-- 几何装饰 -->
+    <div class="absolute inset-0 pointer-events-none">
+      <div class="absolute top-1/4 left-0 right-0 geo-line-h"></div>
+      <div class="absolute bottom-1/3 left-0 right-0 geo-line-h"></div>
+      <div class="absolute top-0 bottom-0 left-1/4 geo-line-v"></div>
+      <div class="absolute top-0 bottom-0 right-1/4 geo-line-v"></div>
+      <!-- 角落装饰 -->
+      <div class="absolute top-24 left-12 w-16 h-px bg-white/10"></div>
+      <div class="absolute top-24 left-12 w-px h-16 bg-white/10"></div>
+      <div class="absolute bottom-24 right-12 w-16 h-px bg-white/10"></div>
+      <div class="absolute bottom-24 right-12 w-px h-16 bg-white/10"></div>
+    </div>
+    
+    <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
+      <!-- 姓名 -->
+      <h1 class="reveal text-5xl sm:text-6xl md:text-7xl font-extralight tracking-tight gradient-text mb-4">
+        <span id="heroNameCn">李梦琪</span>
+        <span class="text-white/40 text-3xl sm:text-4xl block sm:inline sm:ml-4 sm:text-5xl">/ <span id="heroNameEn">Mengqi Li</span></span>
+      </h1>
+      
+      <!-- 标语 -->
+      <p class="reveal text-lg sm:text-xl text-white/60 font-light tracking-wide mb-8" style="transition-delay: 0.1s;">
+        <span id="heroTagline1">在复杂系统中寻找简洁逻辑</span><br class="sm:hidden">
+        <span class="hidden sm:inline"> · </span>
+        <span id="heroTagline2">从第一性原理理解产业变迁</span>
+      </p>
+      
+      <!-- 简介 -->
+      <p id="heroBio" class="reveal text-base text-white/50 max-w-2xl mx-auto leading-relaxed mb-10" style="transition-delay: 0.2s;">
+        理工金融复合背景，CFA III Candidate。专注硬科技、新能源、AI赛道研究。
+      </p>
+      
+      <!-- 身份标签 Pills -->
+      <div id="heroCredentials" class="reveal flex flex-wrap justify-center gap-3" style="transition-delay: 0.3s;">
+        <!-- 动态渲染 -->
+      </div>
+    </div>
+    
+    <!-- 底部渐变 -->
+    <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#0f172a] to-transparent"></div>
+  </section>
+
+  <!-- ==================== Research Lab ==================== -->
+  <section id="research" class="py-24 sm:py-32 relative">
+    <!-- 几何装饰 -->
+    <div class="absolute inset-0 pointer-events-none">
+      <div class="absolute top-1/3 left-0 right-0 geo-line-h"></div>
+      <div class="absolute top-0 bottom-0 left-1/3 geo-line-v"></div>
+    </div>
+    
+    <div class="max-w-6xl mx-auto px-6 relative z-10">
+      <!-- Section Title -->
+      <div class="mb-16">
+        <h2 class="reveal text-4xl sm:text-5xl font-extralight text-white/90 mb-4">Research Lab</h2>
+        <p class="reveal text-white/40 text-base" style="transition-delay: 0.1s;">深度研究案例与思考框架</p>
+      </div>
+      
+      <!-- Research Cards -->
+      <div id="researchContainer" class="space-y-12">
+        <!-- 动态渲染 -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== Investment Thesis ==================== -->
+  <section id="thesis" class="py-24 sm:py-32 relative bg-slate-900/30">
+    <!-- 几何装饰 -->
+    <div class="absolute inset-0 pointer-events-none">
+      <div class="absolute bottom-1/4 left-0 right-0 geo-line-h"></div>
+    </div>
+    
+    <div class="max-w-6xl mx-auto px-6 relative z-10">
+      <!-- Section Title -->
+      <div class="mb-16">
+        <h2 class="reveal text-4xl sm:text-5xl font-extralight text-white/90 mb-4">Investment Thesis</h2>
+        <p class="reveal text-white/40 text-base" style="transition-delay: 0.1s;">基于基本面研究的投资思考</p>
+      </div>
+      
+      <!-- Thesis Cards Grid -->
+      <div id="thesisContainer" class="grid md:grid-cols-3 gap-6">
+        <!-- 动态渲染 -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== Experience ==================== -->
+  <section id="experience" class="py-24 sm:py-32 relative">
+    <div class="max-w-4xl mx-auto px-6">
+      <!-- Section Title -->
+      <div class="mb-16">
+        <h2 class="reveal text-4xl sm:text-5xl font-extralight text-white/90 mb-4">Experience</h2>
+        <p class="reveal text-white/40 text-base" style="transition-delay: 0.1s;">职业轨迹</p>
+      </div>
+      
+      <!-- Experience List -->
+      <div id="experienceContainer" class="space-y-8">
+        <!-- 动态渲染 -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== Education ==================== -->
+  <section id="education" class="py-24 sm:py-32 relative bg-slate-900/30">
+    <div class="max-w-4xl mx-auto px-6">
+      <!-- Section Title -->
+      <div class="mb-16">
+        <h2 class="reveal text-4xl sm:text-5xl font-extralight text-white/90 mb-4">Education</h2>
+        <p class="reveal text-white/40 text-base" style="transition-delay: 0.1s;">学术背景</p>
+      </div>
+      
+      <!-- Education List -->
+      <div id="educationContainer" class="space-y-8">
+        <!-- 动态渲染 -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== Research Notes ==================== -->
+  <section id="notes" class="py-24 sm:py-32 relative">
+    <div class="max-w-4xl mx-auto px-6">
+      <!-- Section Title -->
+      <div class="mb-16">
+        <h2 class="reveal text-4xl sm:text-5xl font-extralight text-white/90 mb-4">Research Notes</h2>
+        <p class="reveal text-white/40 text-base" style="transition-delay: 0.1s;">研究随笔</p>
+      </div>
+      
+      <!-- Notes List -->
+      <div id="notesContainer" class="space-y-6">
+        <!-- 动态渲染 -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== Personal ==================== -->
+  <section id="personal" class="py-24 sm:py-32 relative bg-slate-900/30">
+    <!-- 几何装饰 -->
+    <div class="absolute inset-0 pointer-events-none">
+      <div class="absolute top-1/4 left-0 right-0 geo-line-h"></div>
+      <div class="absolute bottom-1/4 left-0 right-0 geo-line-h"></div>
+    </div>
+    
+    <div class="max-w-6xl mx-auto px-6 relative z-10">
+      <!-- Section Title -->
+      <div class="text-center mb-6">
+        <h2 class="reveal text-4xl sm:text-5xl font-extralight text-white/90 mb-4">Beyond Work</h2>
+      </div>
+      
+      <!-- Intro -->
+      <p id="personalIntro" class="reveal text-center text-white/50 max-w-2xl mx-auto mb-16 leading-relaxed" style="transition-delay: 0.1s;">
+        好的投资需要审美与想象力，就像好的摄影作品需要等待光线与构图的共振。
+      </p>
+      
+      <!-- Personal Cards -->
+      <div id="personalContainer" class="grid md:grid-cols-3 gap-6 mb-16">
+        <!-- 动态渲染 -->
+      </div>
+      
+      <!-- Responsibility Quote -->
+      <div id="personalResponsibility" class="reveal glass-card p-8 sm:p-10" style="transition-delay: 0.3s;">
+        <!-- 动态渲染 -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== Contact ==================== -->
+  <section id="contact" class="py-24 sm:py-32 relative">
+    <!-- 几何装饰 -->
+    <div class="absolute inset-0 pointer-events-none">
+      <div class="absolute top-1/3 left-0 right-0 geo-line-h"></div>
+      <div class="absolute bottom-1/3 left-0 right-0 geo-line-h"></div>
+      <div class="absolute top-0 bottom-0 left-1/4 geo-line-v"></div>
+      <div class="absolute top-0 bottom-0 right-1/4 geo-line-v"></div>
+      <!-- 角落装饰 -->
+      <div class="absolute top-20 left-20 w-20 h-px bg-white/10"></div>
+      <div class="absolute top-20 left-20 w-px h-20 bg-white/10"></div>
+      <div class="absolute bottom-20 right-20 w-20 h-px bg-white/10"></div>
+      <div class="absolute bottom-20 right-20 w-px h-20 bg-white/10"></div>
+    </div>
+    
+    <!-- Aurora Glow -->
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent-blue/10 blur-[120px] pointer-events-none"></div>
+    
+    <div class="max-w-4xl mx-auto px-6 relative z-10 text-center">
+      <!-- Title -->
+      <h2 class="reveal text-5xl sm:text-6xl md:text-7xl font-extralight gradient-text mb-16">Let's Connect</h2>
+      
+      <!-- Contact Cards -->
+      <div id="contactContainer" class="grid sm:grid-cols-3 gap-6 mb-16">
+        <!-- 动态渲染 -->
+      </div>
+      
+      <!-- Footer -->
+      <p id="contactFooter" class="reveal text-sm text-white/30" style="transition-delay: 0.2s;">
+        本站研究内容仅供学术交流，不构成投资建议
+      </p>
+      
+      <!-- Admin Link -->
+      <a href="/admin" class="inline-block mt-8 text-xs text-white/15 hover:text-white/30 transition-colors">
+        管理后台
+      </a>
+    </div>
+  </section>
+
+  <!-- ==================== JavaScript ==================== -->
+  <script>
+    // ==================== 工具函数 ====================
+    
+    // Markdown 解析（简化版）
+    function parseMarkdown(text) {
+      if (!text) return '';
+      // 使用 marked.js
+      return marked.parse(text);
+    }
+    
+    // 数据获取（带错误处理）
+    async function fetchData(url, defaultData = null) {
+      try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Fetch failed');
+        return await response.json();
+      } catch (error) {
+        console.warn(`Failed to load ${url}:`, error);
+        return defaultData;
+      }
+    }
+    
+    // 滚动显示动画
+    function initRevealAnimation() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      });
+      
+      document.querySelectorAll('.reveal').forEach(el => {
+        observer.observe(el);
+      });
+    }
+    
+    // 导航栏滚动效果
+    function initNavbar() {
+      const navbar = document.getElementById('navbar');
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+          navbar.classList.add('nav-glass');
+        } else {
+          navbar.classList.remove('nav-glass');
+        }
+      });
+    }
+    
+    // 移动端菜单
+    function initMobileMenu() {
+      const menuBtn = document.getElementById('menuBtn');
+      const closeMenu = document.getElementById('closeMenu');
+      const mobileMenu = document.getElementById('mobileMenu');
+      const mobileLinks = document.querySelectorAll('.mobile-link');
+      
+      menuBtn.addEventListener('click', () => {
+        mobileMenu.classList.add('open');
+      });
+      
+      closeMenu.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+      });
+      
+      mobileLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.remove('open');
+        });
+      });
+    }
+    
+    // 平滑滚动
+    function initSmoothScroll() {
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            target.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        });
+      });
+    }
+    
+    // ==================== 渲染函数 ====================
+    
+    // 渲染 Hero
+    function renderHero(data) {
+      if (!data) return;
+      
+      document.getElementById('heroNameCn').textContent = data.name_cn || '李梦琪';
+      document.getElementById('heroNameEn').textContent = data.name_en || 'Mengqi Li';
+      document.getElementById('heroTagline1').textContent = data.tagline_1 || '在复杂系统中寻找简洁逻辑';
+      document.getElementById('heroTagline2').textContent = data.tagline_2 || '从第一性原理理解产业变迁';
+      document.getElementById('heroBio').textContent = data.bio || '';
+      
+      // 渲染身份标签
+      const credentialsContainer = document.getElementById('heroCredentials');
+      if (data.credentials && data.credentials.length > 0) {
+        credentialsContainer.innerHTML = data.credentials.map(cred => `
+          <span class="px-4 py-2 text-sm text-white/60 border border-white/20 bg-white/[0.03]">
+            ${cred.text || cred}
+          </span>
+        `).join('');
+      }
+    }
+    
+    // 渲染 Research
+    function renderResearch(items) {
+      if (!items || items.length === 0) return;
+      
+      // 按 order 排序
+      items.sort((a, b) => (b.order || 0) - (a.order || 0));
+      
+      const container = document.getElementById('researchContainer');
+      container.innerHTML = items.map((item, index) => `
+        <div class="reveal glass-card overflow-hidden" style="transition-delay: ${index * 0.1}s;">
+          <div class="p-8 sm:p-10">
+            <!-- Header -->
+            <div class="mb-8">
+              <div class="flex flex-wrap items-center gap-3 text-xs text-white/40 uppercase tracking-wider mb-4">
+                <span>${item.subtitle || ''}</span>
+              </div>
+              <h3 class="text-2xl sm:text-3xl font-light text-white/90">${item.title}</h3>
+            </div>
+            
+            <!-- Question -->
+            ${item.question ? `
+              <div class="bg-white/[0.03] border border-white/5 p-5 mb-8">
+                <p class="text-white/60 font-light">${item.question}</p>
+              </div>
+            ` : ''}
+            
+            <!-- Insight -->
+            ${item.insight ? `
+              <div class="mb-8">
+                <div class="flex items-start gap-4">
+                  <div class="w-10 h-10 bg-accent-blue/10 flex items-center justify-center flex-shrink-0 border border-accent-blue/20">
+                    <svg class="w-5 h-5 text-accent-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 class="text-xs text-white/40 uppercase tracking-wider mb-2">核心洞察</h4>
+                    <div class="text-white/60 font-light leading-relaxed">${parseMarkdown(item.insight)}</div>
+                  </div>
+                </div>
+              </div>
+            ` : ''}
+            
+            <!-- Stats Grid -->
+            ${item.stats && item.stats.length > 0 ? `
+              <div class="grid grid-cols-3 gap-4">
+                ${item.stats.map(stat => `
+                  <div class="text-center p-4 bg-white/[0.02] border border-white/5">
+                    <div class="text-3xl sm:text-4xl font-extralight text-accent-blue glow-number tracking-tight">${stat.number}</div>
+                    <div class="text-xs text-white/50 mt-1">${stat.label}</div>
+                    ${stat.sublabel ? `<div class="text-xs text-white/30 mt-0.5">${stat.sublabel}</div>` : ''}
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    // 渲染 Thesis
+    function renderThesis(items) {
+      if (!items || items.length === 0) return;
+      
+      items.sort((a, b) => (a.order || 0) - (b.order || 0));
+      
+      const container = document.getElementById('thesisContainer');
+      container.innerHTML = items.map((item, index) => `
+        <div class="reveal glass-card p-8" style="transition-delay: ${index * 0.1}s;">
+          <h3 class="text-lg font-normal text-white/80 mb-2">${item.title}</h3>
+          <p class="text-xs text-white/40 uppercase tracking-wider mb-4">${item.subtitle || ''}</p>
+          <div class="text-sm text-white/50 font-light leading-relaxed">${parseMarkdown(item.body)}</div>
+        </div>
+      `).join('');
+    }
+    
+    // 渲染 Experience
+    function renderExperience(items) {
+      if (!items || items.length === 0) return;
+      
+      items.sort((a, b) => (b.order || 0) - (a.order || 0));
+      
+      const container = document.getElementById('experienceContainer');
+      container.innerHTML = items.map((item, index) => `
+        <div class="reveal flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-8 pb-8 border-b border-white/5" style="transition-delay: ${index * 0.08}s;">
+          <!-- Period -->
+          <div class="sm:w-32 flex-shrink-0">
+            <span class="text-xs text-white/40 uppercase tracking-wider">${item.period}</span>
+          </div>
+          
+          <!-- Content -->
+          <div class="flex-1">
+            <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 mb-2">
+              <h4 class="text-lg font-normal text-white/80">${item.company}</h4>
+              <span class="text-sm text-white/40">${item.role}</span>
+            </div>
+            <div class="text-sm text-white/45 font-light leading-relaxed">${parseMarkdown(item.description)}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    // 渲染 Education
+    function renderEducation(items) {
+      if (!items || items.length === 0) return;
+      
+      items.sort((a, b) => (a.order || 0) - (b.order || 0));
+      
+      const container = document.getElementById('educationContainer');
+      container.innerHTML = items.map((item, index) => `
+        <div class="reveal flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-8 pb-8 border-b border-white/5" style="transition-delay: ${index * 0.08}s;">
+          <!-- Period -->
+          <div class="sm:w-32 flex-shrink-0">
+            <span class="text-xs text-white/40 uppercase tracking-wider">${item.period}</span>
+          </div>
+          
+          <!-- Content -->
+          <div class="flex-1">
+            <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 mb-2">
+              <h4 class="text-lg font-normal text-white/80">${item.school}</h4>
+              <span class="text-sm text-white/40">${item.degree}</span>
+            </div>
+            <p class="text-sm text-white/50 mb-2">${item.department}</p>
+            ${item.details ? `<div class="text-sm text-white/40 font-light">${parseMarkdown(item.details)}</div>` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    // 渲染 Notes
+    function renderNotes(items) {
+      if (!items || items.length === 0) {
+        document.getElementById('notes').style.display = 'none';
+        return;
+      }
+      
+      items.sort((a, b) => (b.order || 0) - (a.order || 0));
+      
+      const container = document.getElementById('notesContainer');
+      container.innerHTML = items.map((item, index) => `
+        <div class="reveal glass-card p-6 cursor-pointer hover:bg-white/[0.05] transition-colors" style="transition-delay: ${index * 0.08}s;">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="text-xs text-white/30">${item.date ? new Date(item.date).toLocaleDateString('zh-CN', {year: 'numeric', month: '2-digit', day: '2-digit'}) : ''}</span>
+          </div>
+          <h4 class="text-base font-normal text-white/70 mb-2">${item.title}</h4>
+          <p class="text-sm text-white/40 font-light">${item.excerpt || ''}</p>
+        </div>
+      `).join('');
+    }
+    
+    // 渲染 Personal
+    function renderPersonal(data) {
+      if (!data) return;
+      
+      document.getElementById('personalIntro').textContent = data.intro || '';
+      
+      // Cards
+      const container = document.getElementById('personalContainer');
+      if (data.cards && data.cards.length > 0) {
+        container.innerHTML = data.cards.map((card, index) => `
+          <div class="reveal glass-card overflow-hidden" style="transition-delay: ${index * 0.1}s;">
+            ${card.image ? `
+              <div class="aspect-video bg-white/[0.03]">
+                <img src="${card.image}" alt="${card.title}" loading="lazy" class="w-full h-full object-cover img-fade" onload="this.classList.add('loaded')">
+              </div>
+            ` : ''}
+            <div class="p-6">
+              <h4 class="text-lg font-normal text-white/80 mb-2">${card.title}</h4>
+              <p class="text-sm text-white/45 font-light leading-relaxed">${card.description}</p>
+            </div>
+          </div>
+        `).join('');
+      }
+      
+      // Responsibility
+      if (data.responsibility) {
+        document.getElementById('personalResponsibility').innerHTML = `
+          <div class="flex items-start gap-5">
+            <div class="w-12 h-12 bg-accent-blue/10 flex items-center justify-center flex-shrink-0 border border-accent-blue/20">
+              <svg class="w-5 h-5 text-accent-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+              </svg>
+            </div>
+            <div>
+              <h4 class="text-xs text-white/40 uppercase tracking-wider mb-3">关于责任感</h4>
+              <p class="text-white/50 font-light leading-relaxed">${data.responsibility}</p>
+            </div>
+          </div>
+        `;
+      }
+    }
+    
+    // 渲染 Contact
+    function renderContact(data) {
+      if (!data) return;
+      
+      const container = document.getElementById('contactContainer');
+      const contacts = [
+        { label: '微信', value: data.wechat, icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z' },
+        { label: 'LinkedIn', value: data.linkedin, icon: 'M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z M4 6a2 2 0 100-4 2 2 0 000 4z' },
+        { label: '邮箱', value: data.email, icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z' },
+      ];
+      
+      container.innerHTML = contacts.map((contact, index) => `
+        <div class="reveal glass-card p-6 text-center" style="transition-delay: ${index * 0.1}s;">
+          <div class="w-12 h-12 bg-white/[0.03] flex items-center justify-center mx-auto mb-4 border border-white/5">
+            <svg class="w-5 h-5 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="${contact.icon}"/>
+            </svg>
+          </div>
+          <p class="text-xs text-white/40 uppercase tracking-wider mb-1">${contact.label}</p>
+          <p class="text-sm text-white/70 font-light">${contact.value}</p>
+        </div>
+      `).join('');
+      
+      if (data.footer) {
+        document.getElementById('contactFooter').textContent = data.footer;
+      }
+    }
+    
+    // ==================== 主程序 ====================
+    
+    async function init() {
+      // 初始化交互
+      initNavbar();
+      initMobileMenu();
+      initSmoothScroll();
+      
+      // 并行加载所有数据
+      const [
+        heroData,
+        researchItems,
+        thesisItems,
+        experienceItems,
+        educationItems,
+        notesItems,
+        personalData,
+        contactData
+      ] = await Promise.all([
+        fetchData('./content/hero.json'),
+        fetchData('./content/research.json', []),
+        fetchData('./content/thesis.json', []),
+        fetchData('./content/experience.json', []),
+        fetchData('./content/education.json', []),
+        fetchData('./content/notes.json', []),
+        fetchData('./content/personal.json'),
+        fetchData('./content/contact.json')
+      ]);
+      
+      // 如果 research/thesis 是单个文件，尝试从目录加载
+      let finalResearch = researchItems;
+      let finalThesis = thesisItems;
+      let finalNotes = notesItems;
+      
+      if (!Array.isArray(researchItems) || researchItems.length === 0) {
+        // 尝试加载单个研究文件
+        const energyStorage = await fetchData('./content/research/energy-storage.json');
+        const photonic = await fetchData('./content/research/photonic-computing.json');
+        finalResearch = [energyStorage, photonic].filter(Boolean);
+      }
+      
+      if (!Array.isArray(thesisItems) || thesisItems.length === 0) {
+        const thesis1 = await fetchData('./content/thesis/from-critic-to-strategist.json');
+        const thesis2 = await fetchData('./content/thesis/first-principles.json');
+        const thesis3 = await fetchData('./content/thesis/cross-market-arbitrage.json');
+        finalThesis = [thesis1, thesis2, thesis3].filter(Boolean);
+      }
+      
+      if (!Array.isArray(notesItems) || notesItems.length === 0) {
+        const note1 = await fetchData('./content/notes/energy-storage-operation.json');
+        const note2 = await fetchData('./content/notes/moore-law-ai-hardware.json');
+        finalNotes = [note1, note2].filter(Boolean);
+      }
+      
+      // 渲染各区块
+      renderHero(heroData);
+      renderResearch(finalResearch);
+      renderThesis(finalThesis);
+      renderExperience(experienceItems);
+      renderEducation(educationItems);
+      renderNotes(finalNotes);
+      renderPersonal(personalData);
+      renderContact(contactData);
+      
+      // 初始化滚动动画
+      initRevealAnimation();
+    }
+    
+    // 页面加载完成后执行
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

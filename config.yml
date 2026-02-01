@@ -1,0 +1,132 @@
+# Decap CMS Configuration
+# 内容管理系统配置文件
+
+backend:
+  name: git-gateway
+  branch: main
+
+publish_mode: editorial_workflow
+media_folder: "assets/uploads"
+public_folder: "/assets/uploads"
+
+# 身份认证配置（部署后需在 Netlify Identity 中设置）
+# 访问 /admin 后使用邮箱密码登录
+
+collections:
+  # ==================== 首页介绍 ====================
+  - name: "hero"
+    label: "首页介绍"
+    files:
+      - name: "hero"
+        label: "Hero 内容"
+        file: "content/hero.json"
+        fields:
+          - {label: "姓名(中文)", name: "name_cn", widget: "string", default: "李梦琪"}
+          - {label: "姓名(英文)", name: "name_en", widget: "string", default: "Mengqi Li"}
+          - {label: "主标语第1行", name: "tagline_1", widget: "string", default: "在复杂系统中寻找简洁逻辑"}
+          - {label: "主标语第2行", name: "tagline_2", widget: "string", default: "从第一性原理理解产业变迁"}
+          - {label: "个人简介", name: "bio", widget: "text"}
+          - label: "身份标签"
+            name: "credentials"
+            widget: "list"
+            fields:
+              - {label: "文字", name: "text", widget: "string"}
+
+  # ==================== 研究案例 ====================
+  - name: "research"
+    label: "研究案例"
+    folder: "content/research"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - {label: "标题", name: "title", widget: "string"}
+      - {label: "副标题(标签)", name: "subtitle", widget: "string", required: false}
+      - {label: "日期", name: "date", widget: "datetime", format: "YYYY.MM"}
+      - {label: "研究问题", name: "question", widget: "text"}
+      - {label: "核心洞察", name: "insight", widget: "markdown"}
+      - label: "关键数据"
+        name: "stats"
+        widget: "list"
+        fields:
+          - {label: "数字", name: "number", widget: "string"}
+          - {label: "标签", name: "label", widget: "string"}
+          - {label: "小字说明", name: "sublabel", widget: "string", required: false}
+      - {label: "配图", name: "image", widget: "image", required: false}
+      - {label: "排序", name: "order", widget: "number", default: 0}
+
+  # ==================== 投资观点 ====================
+  - name: "thesis"
+    label: "投资观点"
+    folder: "content/thesis"
+    create: true
+    fields:
+      - {label: "标题", name: "title", widget: "string"}
+      - {label: "副标题", name: "subtitle", widget: "string"}
+      - {label: "内容", name: "body", widget: "markdown"}
+      - {label: "排序", name: "order", widget: "number", default: 0}
+
+  # ==================== 职业经历 ====================
+  - name: "experience"
+    label: "职业经历"
+    folder: "content/experience"
+    create: true
+    fields:
+      - {label: "公司", name: "company", widget: "string"}
+      - {label: "职位", name: "role", widget: "string"}
+      - {label: "时间", name: "period", widget: "string"}
+      - {label: "地点", name: "location", widget: "string"}
+      - {label: "描述", name: "description", widget: "markdown"}
+      - {label: "排序(倒序)", name: "order", widget: "number", default: 0}
+
+  # ==================== 教育背景 ====================
+  - name: "education"
+    label: "教育背景"
+    folder: "content/education"
+    create: true
+    fields:
+      - {label: "学校", name: "school", widget: "string"}
+      - {label: "学院", name: "department", widget: "string"}
+      - {label: "学位", name: "degree", widget: "string"}
+      - {label: "时间", name: "period", widget: "string"}
+      - {label: "详情", name: "details", widget: "markdown", required: false}
+      - {label: "排序", name: "order", widget: "number", default: 0}
+
+  # ==================== 研究随笔 ====================
+  - name: "notes"
+    label: "研究随笔"
+    folder: "content/notes"
+    create: true
+    fields:
+      - {label: "标题", name: "title", widget: "string"}
+      - {label: "日期", name: "date", widget: "datetime", format: "YYYY.MM.DD"}
+      - {label: "摘要", name: "excerpt", widget: "text"}
+      - {label: "内容", name: "body", widget: "markdown"}
+      - {label: "排序", name: "order", widget: "number", default: 0}
+
+  # ==================== 工作之外 ====================
+  - name: "personal"
+    label: "工作之外"
+    files:
+      - name: "personal"
+        file: "content/personal.json"
+        fields:
+          - {label: "导语", name: "intro", widget: "text"}
+          - label: "兴趣卡片"
+            name: "cards"
+            widget: "list"
+            fields:
+              - {label: "标题", name: "title", widget: "string"}
+              - {label: "描述", name: "description", widget: "text"}
+              - {label: "图片", name: "image", widget: "image", required: false}
+
+  # ==================== 联系方式 ====================
+  - name: "contact"
+    label: "联系方式"
+    files:
+      - name: "contact"
+        file: "content/contact.json"
+        fields:
+          - {label: "微信", name: "wechat", widget: "string"}
+          - {label: "LinkedIn", name: "linkedin", widget: "string"}
+          - {label: "邮箱", name: "email", widget: "string"}
+          - {label: "页脚文字", name: "footer", widget: "string", default: "本站研究内容仅供学术交流，不构成投资建议"}
