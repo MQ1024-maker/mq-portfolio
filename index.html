@@ -190,6 +190,149 @@
     .mobile-menu.open {
       transform: translateX(0);
     }
+ /* ==================== Research 图片样式 ==================== */
+
+.research-card-wrapper {
+  margin-bottom: 3rem;
+}
+
+.research-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.research-grid.has-image {
+  grid-template-columns: 45% 55%;
+}
+
+@media (max-width: 968px) {
+  .research-grid.has-image {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 图片区域 */
+.research-image-section {
+  position: relative;
+  background: rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.research-image-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 320px;
+  max-height: 400px;
+}
+
+.research-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.research-card-wrapper:hover .research-img {
+  transform: scale(1.05);
+}
+
+/* 图片标题遮罩 */
+.image-caption-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 2rem 1.5rem 1.5rem;
+  background: linear-gradient(to top, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0.5) 60%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  display: flex;
+  align-items: flex-end;
+}
+
+.research-card-wrapper:hover .image-caption-overlay {
+  opacity: 1;
+}
+
+.image-caption-overlay span {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.875rem;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+}
+
+/* 内容区域优化 */
+.research-content-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.research-question-box {
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 3px solid rgba(126, 200, 227, 0.5);
+  padding: 1.25rem;
+  border-radius: 0 8px 8px 0;
+}
+
+/* 数据网格优化 */
+.research-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: auto;
+  padding-top: 2rem;
+}
+
+@media (max-width: 640px) {
+  .research-stats-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .research-image-container {
+    min-height: 240px;
+    max-height: 300px;
+  }
+}
+
+.stat-card {
+  text-align: center;
+  padding: 1.5rem 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(126, 200, 227, 0.3);
+  transform: translateY(-2px);
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 300;
+  color: #7ec8e3;
+  text-shadow: 0 0 20px rgba(126, 200, 227, 0.3);
+  font-family: 'SF Mono', monospace;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 0.25rem;
+}
+
+.stat-sublabel {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+  
   </style>
 </head>
 <body class="antialiased">
@@ -558,29 +701,50 @@
       }
     }
     
-    // 渲染 Research
-    function renderResearch(items) {
-      if (!items || items.length === 0) return;
-      
-      // 按 order 排序
-      items.sort((a, b) => (b.order || 0) - (a.order || 0));
-      
-      const container = document.getElementById('researchContainer');
-      container.innerHTML = items.map((item, index) => `
-        <div class="reveal glass-card overflow-hidden" style="transition-delay: ${index * 0.1}s;">
-          <div class="p-8 sm:p-10">
+    // 渲染 Research（带图片支持）
+function renderResearch(items) {
+  if (!items || items.length === 0) return;
+  
+  // 按 order 排序
+  items.sort((a, b) => (b.order || 0) - (a.order || 0));
+  
+  const container = document.getElementById('researchContainer');
+  container.innerHTML = items.map((item, index) => `
+    <div class="reveal research-card-wrapper" style="transition-delay: ${index * 0.1}s;">
+      <div class="glass-card overflow-hidden">
+        <div class="research-grid ${item.image ? 'has-image' : ''}">
+          ${item.image ? `
+            <!-- 图片区域 -->
+            <div class="research-image-section">
+              <div class="research-image-container">
+                <img src="${item.image}" 
+                     alt="${item.title}" 
+                     loading="lazy" 
+                     class="research-img"
+                     onerror="this.style.display='none'">
+                ${item.imageCaption ? `
+                  <div class="image-caption-overlay">
+                    <span>${item.imageCaption}</span>
+                  </div>
+                ` : ''}
+              </div>
+            </div>
+          ` : ''}
+          
+          <!-- 内容区域 -->
+          <div class="research-content-section p-8 sm:p-10">
             <!-- Header -->
-            <div class="mb-8">
-              <div class="flex flex-wrap items-center gap-3 text-xs text-white/40 uppercase tracking-wider mb-4">
+            <div class="mb-6">
+              <div class="flex flex-wrap items-center gap-3 text-xs text-white/40 uppercase tracking-wider mb-3">
                 <span>${item.subtitle || ''}</span>
               </div>
-              <h3 class="text-2xl sm:text-3xl font-light text-white/90">${item.title}</h3>
+              <h3 class="text-2xl sm:text-3xl font-light text-white/90 leading-tight">${item.title}</h3>
             </div>
             
             <!-- Question -->
             ${item.question ? `
-              <div class="bg-white/[0.03] border border-white/5 p-5 mb-8">
-                <p class="text-white/60 font-light">${item.question}</p>
+              <div class="research-question-box mb-6">
+                <p class="text-white/60 font-light text-sm leading-relaxed">${item.question}</p>
               </div>
             ` : ''}
             
@@ -588,14 +752,14 @@
             ${item.insight ? `
               <div class="mb-8">
                 <div class="flex items-start gap-4">
-                  <div class="w-10 h-10 bg-accent-blue/10 flex items-center justify-center flex-shrink-0 border border-accent-blue/20">
-                    <svg class="w-5 h-5 text-accent-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div class="w-8 h-8 bg-accent-blue/10 flex items-center justify-center flex-shrink-0 border border-accent-blue/20 mt-1">
+                    <svg class="w-4 h-4 text-accent-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
                     </svg>
                   </div>
                   <div>
                     <h4 class="text-xs text-white/40 uppercase tracking-wider mb-2">核心洞察</h4>
-                    <div class="text-white/60 font-light leading-relaxed">${parseMarkdown(item.insight)}</div>
+                    <div class="text-white/70 font-light leading-relaxed text-sm">${parseMarkdown(item.insight)}</div>
                   </div>
                 </div>
               </div>
@@ -603,20 +767,22 @@
             
             <!-- Stats Grid -->
             ${item.stats && item.stats.length > 0 ? `
-              <div class="grid grid-cols-3 gap-4">
+              <div class="research-stats-grid">
                 ${item.stats.map(stat => `
-                  <div class="text-center p-4 bg-white/[0.02] border border-white/5">
-                    <div class="text-3xl sm:text-4xl font-extralight text-accent-blue glow-number tracking-tight">${stat.number}</div>
-                    <div class="text-xs text-white/50 mt-1">${stat.label}</div>
-                    ${stat.sublabel ? `<div class="text-xs text-white/30 mt-0.5">${stat.sublabel}</div>` : ''}
+                  <div class="stat-card">
+                    <div class="stat-number">${stat.number}</div>
+                    <div class="stat-label">${stat.label}</div>
+                    ${stat.sublabel ? `<div class="stat-sublabel">${stat.sublabel}</div>` : ''}
                   </div>
                 `).join('')}
               </div>
             ` : ''}
           </div>
         </div>
-      `).join('');
-    }
+      </div>
+    </div>
+  `).join('');
+}
     
     // 渲染 Thesis
     function renderThesis(items) {
