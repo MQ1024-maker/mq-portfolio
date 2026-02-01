@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>内容管理后台 | MQ's Portfolio</title>
+  <link rel="stylesheet" href="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.css">
+  <style>
+    /* 深色模式适配 - Apple 风格 */
+    :root {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --text-primary: #ffffff;
+      --text-secondary: #e5e7eb;
+      --text-muted: #94a3b8;
+      --accent: #7ec8e3;
+      --border: rgba(255, 255, 255, 0.1);
+    }
+    
+    body {
+      background-color: var(--bg-primary);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    
+    /* CMS Header - 毛玻璃效果 */
+    [class*="AppHeader"] {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%) !important;
+      backdrop-filter: blur(20px) !important;
+      border-bottom: 1px solid var(--border) !important;
+    }
+    
+    /* Sidebar - 深色玻璃 */
+    [class*="Sidebar"] {
+      background: rgba(30, 41, 59, 0.9) !important;
+      backdrop-filter: blur(20px) !important;
+      border-right: 1px solid var(--border) !important;
+    }
+    
+    /* 按钮样式 */
+    [class*="Button"] {
+      border-radius: 0 !important;
+    }
+    
+    /* 卡片样式 */
+    [class*="Card"] {
+      background: rgba(255, 255, 255, 0.03) !important;
+      border: 1px solid var(--border) !important;
+      border-radius: 0 !important;
+    }
+    
+    /* 输入框 */
+    input, textarea, select {
+      background: rgba(255, 255, 255, 0.05) !important;
+      border: 1px solid var(--border) !important;
+      color: var(--text-primary) !important;
+      border-radius: 0 !important;
+    }
+    
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--accent) !important;
+      outline: none !important;
+    }
+    
+    /* 登录界面 */
+    [class*="LoginPage"] {
+      background: var(--bg-primary) !important;
+    }
+    
+    [class*="LoginCard"] {
+      background: rgba(255, 255, 255, 0.03) !important;
+      border: 1px solid var(--border) !important;
+      border-radius: 0 !important;
+    }
+  </style>
+</head>
+<body>
+  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+</body>
+</html>
