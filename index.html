@@ -684,15 +684,15 @@
 function renderHero(data) {
   if (!data) return;
   
-  // 动态构建 HTML
+   // 动态构建 HTML
   const heroHTML = `
-    <!-- 欢迎语（最大字号） -->
-    <h1 class="reveal text-4xl sm:text-5xl md:text-6xl font-extralight tracking-tight text-white/90 mb-6">
+    <!-- 欢迎语（稍微减小字号） -->
+    <h1 class="reveal text-3xl sm:text-4xl md:text-5xl font-extralight tracking-tight text-white/90 mb-6">
       ${data.welcome || 'Welcome to My Personal Website'}
     </h1>
     
-    <!-- 亲和自我介绍（中等字号，渐变色彩） -->
-    <p class="reveal text-xl sm:text-2xl md:text-3xl font-light gradient-text mb-8" style="transition-delay: 0.1s;">
+    <!-- 亲和自我介绍（减小字号，限制宽度防止溢出） -->
+    <p class="reveal text-base sm:text-lg md:text-xl font-light gradient-text mb-8 max-w-3xl mx-auto leading-relaxed px-4" style="transition-delay: 0.1s;">
       ${data.name_intro || '我叫李梦琪，你可以叫我 Catherine'}
     </p>
     
