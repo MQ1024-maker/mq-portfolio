@@ -967,13 +967,17 @@ function renderResearch(items) {
     fetchData('./content/contact.json')
   ]);
   
-  // 加载经历（从多个文件）
+   // 加载经历（按时间倒序：星界→中金→源码→华港→毕括）
   let finalExperience = [];
-  const exp1 = await fetchData('./content/experience/bkuo.json');
-  const exp2 = await fetchData('./content/experience/cicc.json');
-  const exp3 = await fetchData('./content/experience/hkfo.json');
-  const exp4 = await fetchData('./content/experience/sourcecode.json');
-  finalExperience = [exp1, exp2, exp3, exp4].filter(Boolean);
+  const exp1 = await fetchData('./content/experience/starquest.json');  // 星界 2026-至今
+  const exp2 = await fetchData('./content/experience/cicc.json');       // 中金 2025.09-2026.01
+  const exp3 = await fetchData('./content/experience/sourcecode.json'); // 源码 2025.01-2025.07
+  const exp4 = await fetchData('./content/experience/hkfo.json');       // 华港 2025.01-2025.06
+  const exp5 = await fetchData('./content/experience/bkuo.json');       // 毕括 2021.03-2023.10
+  finalExperience = [exp1, exp2, exp3, exp4, exp5].filter(Boolean);
+
+  // 确保排序（以防万一）
+  finalExperience.sort((a, b) => (b.order || 0) - (a.order || 0));
   
   // 加载教育（从多个文件）
   let finalEducation = [];
