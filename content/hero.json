@@ -1,13 +1,12 @@
 {
-  "name_cn": "李梦琪",
-  "name_en": "Catherine Li",
-  "tagline_1": "在复杂系统中寻找简洁逻辑",
-  "tagline_2": "从第一性原理理解产业变迁",
+  "welcome": "Welcome to My Personal Website",
+  "name_intro": "Hi,你好，我是李梦琪，你可以叫我 Catherine，也可以叫我 MQ，或者 MQMQ～",
+  "tagline": "在复杂系统中寻找简洁逻辑 · 从第一性原理理解产业变迁",
   "bio": "理工金融复合背景，CFA III Candidate。北航材料科学与工程学士，曼彻斯特大学材料科学硕士（First Class），清华大学GMBA在读。近3年投资咨询历练 + MBA期间顶级投资机构探索，覆盖医疗、消费、AI、硬科技、新能源等多行业。",
   "credentials": [
-    "北航 · 曼大 · 清华",
+    "北航·曼大·清华",
     "CFA III Candidate",
-    "材料科学 × 金融投资",
+    "材料科学×金融投资",
     "Beijing"
   ]
 }
