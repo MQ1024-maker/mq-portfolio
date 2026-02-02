@@ -946,71 +946,78 @@ function renderResearch(items) {
     
     // ==================== 主程序 ====================
     
-    async function init() {
-      // 初始化交互
-      initNavbar();
-      initMobileMenu();
-      initSmoothScroll();
-      
-      // 并行加载所有数据
-      const [
-        heroData,
-        researchItems,
-        thesisItems,
-        experienceItems,
-        educationItems,
-        notesItems,
-        personalData,
-        contactData
-      ] = await Promise.all([
-        fetchData('./content/hero.json'),
-        fetchData('./content/research.json', []),
-        fetchData('./content/thesis.json', []),
-        fetchData('./content/experience.json', []),
-        fetchData('./content/education.json', []),
-        fetchData('./content/notes.json', []),
-        fetchData('./content/personal.json'),
-        fetchData('./content/contact.json')
-      ]);
-      
-      // 如果 research/thesis 是单个文件，尝试从目录加载
-      let finalResearch = researchItems;
-      let finalThesis = thesisItems;
-      let finalNotes = notesItems;
-      
-      if (!Array.isArray(researchItems) || researchItems.length === 0) {
-        // 尝试加载单个研究文件
-        const energyStorage = await fetchData('./content/research/energy-storage.json');
-        const photonic = await fetchData('./content/research/photonic-computing.json');
-        finalResearch = [energyStorage, photonic].filter(Boolean);
-      }
-      
-      if (!Array.isArray(thesisItems) || thesisItems.length === 0) {
-        const thesis1 = await fetchData('./content/thesis/from-critic-to-strategist.json');
-        const thesis2 = await fetchData('./content/thesis/first-principles.json');
-        const thesis3 = await fetchData('./content/thesis/cross-market-arbitrage.json');
-        finalThesis = [thesis1, thesis2, thesis3].filter(Boolean);
-      }
-      
-      if (!Array.isArray(notesItems) || notesItems.length === 0) {
-        const note1 = await fetchData('./content/notes/energy-storage-operation.json');
-        const note2 = await fetchData('./content/notes/moore-law-ai-hardware.json');
-        finalNotes = [note1, note2].filter(Boolean);
-      }
-      
-      // 渲染各区块
-      renderHero(heroData);
-      renderResearch(finalResearch);
-      renderThesis(finalThesis);
-      renderExperience(experienceItems);
-      renderEducation(educationItems);
-      renderNotes(finalNotes);
-      renderPersonal(personalData);
-      renderContact(contactData);
-      
-      // 初始化滚动动画
-      initRevealAnimation();
-    }
+   async function init() {
+  // 初始化交互
+  initNavbar();
+  initMobileMenu();
+  initSmoothScroll();
+  
+  // 并行加载所有数据
+  const [
+    heroData,
+    researchItems,
+    thesisItems,
+    personalData,
+    contactData
+  ] = await Promise.all([
+    fetchData('./content/hero.json'),
+    fetchData('./content/research.json', []),
+    fetchData('./content/thesis.json', []),
+    fetchData('./content/personal.json'),
+    fetchData('./content/contact.json')
+  ]);
+  
+  // 加载经历（从多个文件）
+  let finalExperience = [];
+  const exp1 = await fetchData('./content/experience/bkuo.json');
+  const exp2 = await fetchData('./content/experience/cicc.json');
+  const exp3 = await fetchData('./content/experience/hkfo.json');
+  const exp4 = await fetchData('./content/experience/sourcecode.json');
+  finalExperience = [exp1, exp2, exp3, exp4].filter(Boolean);
+  
+  // 加载教育（从多个文件）
+  let finalEducation = [];
+  const edu1 = await fetchData('./content/education/buaa.json');
+  const edu2 = await fetchData('./content/education/manchester.json');
+  const edu3 = await fetchData('./content/education/tsinghua.json');
+  finalEducation = [edu1, edu2, edu3].filter(Boolean);
+  
+  // 如果 research/thesis/notes 是单个文件，尝试从目录加载
+  let finalResearch = researchItems;
+  let finalThesis = [];
+  let finalNotes = [];
+  
+  if (!Array.isArray(researchItems) || researchItems.length === 0) {
+    // 尝试加载单个研究文件
+    const r1 = await fetchData('./content/research/energy-storage.json');
+    const r2 = await fetchData('./content/research/photonic-computing.json');
+    finalResearch = [r1, r2].filter(Boolean);
+  }
+  
+  // 加载投资观点
+  const t1 = await fetchData('./content/thesis/from-critic-to-strategist.json');
+  const t2 = await fetchData('./content/thesis/first-principles.json');
+  const t3 = await fetchData('./content/thesis/cross-market-arbitrage.json');
+  finalThesis = [t1, t2, t3].filter(Boolean);
+  
+  // 加载随笔（如果有）
+  const n1 = await fetchData('./content/notes/energy-storage-operation.json');
+  const n2 = await fetchData('./content/notes/moore-law-ai-hardware.json');
+  finalNotes = [n1, n2].filter(Boolean);
+
+  // 渲染各区块
+  renderHero(heroData);
+  renderResearch(finalResearch);
+  renderThesis(finalThesis);
+  renderExperience(finalExperience);  // 改成 finalExperience
+  renderEducation(finalEducation);    // 改成 finalEducation
+  renderNotes(finalNotes);
+  renderPersonal(personalData);
+  renderContact(contactData);
+  
+  // 初始化滚动动画
+  initRevealAnimation();
+}
     
     // 页面加载完成后执行
     document.addEventListener('DOMContentLoaded', init);
