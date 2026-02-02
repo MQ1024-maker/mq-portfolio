@@ -716,16 +716,15 @@ function renderHero(data) {
     </div>
   `;
   
-  // 找到 hero 区域并替换内容
+ // 找到 hero 区域并替换内容
   const heroContainer = document.querySelector('#hero .max-w-4xl');
   if (heroContainer) {
     heroContainer.innerHTML = heroHTML;
   }
- } 
-    
-    // 渲染 Research（带图片支持）
+}
+
+// 渲染 Research（带图片支持）
 function renderResearch(items) {
-  if (!items || items.length === 0) return;
   
   // 按 order 排序
   items.sort((a, b) => (b.order || 0) - (a.order || 0));
