@@ -680,26 +680,47 @@
     
     // ==================== 渲染函数 ====================
     
-    // 渲染 Hero
-    function renderHero(data) {
-      if (!data) return;
-      
-      document.getElementById('heroNameCn').textContent = data.name_cn || '李梦琪';
-      document.getElementById('heroNameEn').textContent = data.name_en || 'Mengqi Li';
-      document.getElementById('heroTagline1').textContent = data.tagline_1 || '在复杂系统中寻找简洁逻辑';
-      document.getElementById('heroTagline2').textContent = data.tagline_2 || '从第一性原理理解产业变迁';
-      document.getElementById('heroBio').textContent = data.bio || '';
-      
-      // 渲染身份标签
-      const credentialsContainer = document.getElementById('heroCredentials');
-      if (data.credentials && data.credentials.length > 0) {
-        credentialsContainer.innerHTML = data.credentials.map(cred => `
-          <span class="px-4 py-2 text-sm text-white/60 border border-white/20 bg-white/[0.03]">
-            ${cred.text || cred}
-          </span>
-        `).join('');
-      }
-    }
+    // 渲染 Hero（亲和版）
+function renderHero(data) {
+  if (!data) return;
+  
+  // 动态构建 HTML
+  const heroHTML = `
+    <!-- 欢迎语（最大字号） -->
+    <h1 class="reveal text-4xl sm:text-5xl md:text-6xl font-extralight tracking-tight text-white/90 mb-6">
+      ${data.welcome || 'Welcome to My Personal Website'}
+    </h1>
+    
+    <!-- 亲和自我介绍（中等字号，渐变色彩） -->
+    <p class="reveal text-xl sm:text-2xl md:text-3xl font-light gradient-text mb-8" style="transition-delay: 0.1s;">
+      ${data.name_intro || '我叫李梦琪，你可以叫我 Catherine'}
+    </p>
+    
+    <!-- 标语 -->
+    <p class="reveal text-base sm:text-lg text-white/50 font-light tracking-wide mb-10" style="transition-delay: 0.2s;">
+      ${data.tagline || '在复杂系统中寻找简洁逻辑 · 从第一性原理理解产业变迁'}
+    </p>
+    
+    <!-- 简介 -->
+    <p class="reveal text-sm sm:text-base text-white/40 max-w-2xl mx-auto leading-relaxed mb-12" style="transition-delay: 0.3s;">
+      ${data.bio || ''}
+    </p>
+    
+    <!-- 身份标签 Pills -->
+    <div id="heroCredentials" class="reveal flex flex-wrap justify-center gap-3" style="transition-delay: 0.4s;">
+      ${data.credentials && data.credentials.length > 0 ? data.credentials.map(cred => `
+        <span class="px-4 py-2 text-xs sm:text-sm text-white/60 border border-white/20 bg-white/[0.03] hover:bg-white/[0.06] transition-colors cursor-default">
+          ${cred}
+        </span>
+      `).join('') : ''}
+    </div>
+  `;
+  
+  // 找到 hero 区域并替换内容
+  const heroContainer = document.querySelector('#hero .max-w-4xl');
+  if (heroContainer) {
+    heroContainer.innerHTML = heroHTML;
+  }
     
     // 渲染 Research（带图片支持）
 function renderResearch(items) {
